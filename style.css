@@ -1,0 +1,4 @@
+.effect_touch {
+    z-index: 100;
+    position: absolute;
+}
