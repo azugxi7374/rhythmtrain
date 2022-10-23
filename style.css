@@ -2,3 +2,12 @@
     z-index: 100;
     position: absolute;
 }
+
+
+#group-canvas {
+    position: relative;
+}
+
+#group-canvas>canvas {
+    position: absolute;
+}
