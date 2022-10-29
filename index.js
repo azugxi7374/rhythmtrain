@@ -36,18 +36,21 @@ function main() {
         handle(touch.clientX, touch.clientY);
     }, { passive: false });
     function handle(mx, my) {
-        const now = Date.now();
-        playHandleTap(state);
+        if (!state.stop) {
+            playHandleTap(state);
+        }
         animationTouch(mx, my);
     }
 
+    // render
     const width = window.innerWidth - 10;
     const height = window.innerHeight - 10;
     const lineY = height * 4 / 5;
     initCanvas(document.getElementById('canvas1'), width, height, lineY);
     const state = {
         // bpm: 180,
-        offsetTime: -1,
+        stop: true,
+        offsetTime: -1, // stop:true時は無効
         time: 0,
         chart: createTestChart(),
         noteResults: {}, // {idx, judge, diff}
@@ -56,21 +59,35 @@ function main() {
     notesCanvas.height = height;
     notesCanvas.width = width;
     const nctx = notesCanvas.getContext('2d');
+    const playBtn = document.querySelector('playbtn');
 
     const FPS = 60;
     setInterval(() => {
-        if (state.offsetTime < 0) {
-            // 初回のみ
-            state.offsetTime = Date.now();
+        if (!state.stop) {
+            const t1 = Date.now();
+            const time = t1 - state.offsetTime;
+            state.time = time;
+            renderPlayButton(playBtn, state);
+            renderNotes(nctx, lineY, state);
         }
-        const t1 = Date.now();
-        const time = t1 - state.offsetTime;
-        state.time = time;
-        renderNotes(nctx, lineY, state);
     }, 1000 / FPS)
 
     window.state = state;
 }
+
+function stop(state) {
+    state.stop = true
+}
+function start(state) {
+    state.stop = false;
+    state.offsetTime = Date.now();
+}
+
+function renderPlayButton(btn, state) {
+    
+}
+
+
 
 function initCanvas(canvas, width, height, lineY) {
     const ctx = canvas.getContext('2d');
