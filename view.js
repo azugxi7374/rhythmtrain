@@ -44,7 +44,7 @@ function renderNotes(ctx, lineY, state) {
             // type=0とする
             const elapsed = state.time - t;
             const noteY = lineY + elapsed * scrollSpeed;
-            const noteX = 299;
+            const noteX = 200 * type;
             ctx.fillRect(noteX, noteY - 1, 50, 4);
         }
     })
