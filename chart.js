@@ -30,9 +30,9 @@ function convertChart(bpm, barList) {
     const chart = [];
     for (let i = 0; i < barList.length; i++) {
         for (let k = 0; k < barList[i].length; k++) {
-            const nt = (barList[i].charAt(k) + "").parseInt(16);
+            const nt = Number.parseInt(barList[i].charAt(k) + "", 16);
             for (let bi = 0; bi < 4; bi++) {
-                if ((nt << bi & 1) === 1) {
+                if ((nt >> bi & 1) === 1) {
                     chart.push({
                         t: 1000 + (i * 4 + k) * (60 * 1000 / bpm),
                         type: bi
