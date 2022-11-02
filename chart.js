@@ -4,6 +4,7 @@ const test2 = `
 3c3c 9696 5a5a edb7
 0248 8420
 `
+
 // const chart2 = parseTextChart(test2);
 
 function parseTextChart(text) {

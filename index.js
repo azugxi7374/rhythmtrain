@@ -7,6 +7,7 @@ const JUDGE_KA = 75.075
 const JUDGE_FUKA = 108.442
 
 function main() {
+
     const elem = document;
     elem.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -19,7 +20,7 @@ function main() {
     }, { passive: false });
     function handle(mx, my) {
         if (!state.pause) {
-            playHandleTap(state);
+            playHandleTap(state, mx, my);
         }
         animationTouch(mx, my);
     }
@@ -44,6 +45,7 @@ function main() {
     const playBtn = document.querySelector('.playbtn');
 
     const FPS = 60;
+
     setInterval(() => {
         if (!state.pause) {
             const t1 = Date.now();
@@ -64,16 +66,4 @@ function pause(state) {
 function start(state) {
     state.pause = false;
     state.offsetTime = Date.now() - state.time;
-}
-
-function playHandleTap(state) {
-    // chartを前から順番に、まだ処理していない && 不可判定枠内
-    const { chart, time } = state;
-    for (let i = 0; i < chart.length; i++) {
-        const diff = Math.abs(time - chart[i].t);
-        if (state.noteResults[i] === undefined && diff < JUDGE_FUKA) {
-            state.noteResults[i] = 0;
-            break;
-        }
-    }
 }

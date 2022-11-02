@@ -26,7 +26,13 @@ function renderPlayButton(btn, start, pause, pauseFlg) {
     }
 }
 
-
+function calcNoteX(nLane, i) {
+    const W = 600;
+    const pad = 50;
+    // |-pad-|--------|-pad-|
+    const wlane = W - pad * 2;
+    return [wlane * i / nLane, i / nLane];
+}
 
 function renderNotes(ctx, lineY, state) {
     const scrollSpeed = 299 / 1000; // px/ms
@@ -44,10 +50,28 @@ function renderNotes(ctx, lineY, state) {
             // type=0とする
             const elapsed = state.time - t;
             const noteY = lineY + elapsed * scrollSpeed;
-            const noteX = 200 * type;
+            const noteX = calcNoteX(4, type);
             ctx.fillRect(noteX, noteY - 1, 50, 4);
         }
     })
+
+}
+
+
+function playHandleTap(state, mx, my) {
+    const nLane = 4;
+    // chartを前から順番に、まだ処理していない && 不可判定枠内
+    const { chart, time } = state;
+    for (let i = 0; i < chart.length; i++) {
+        const diff = Math.abs(time - chart[i].t);
+        const noteTimeFlg = (state.noteResults[i] === undefined && diff < JUDGE_FUKA);
+        const [x0, x1] = calcNoteX(nLane, chart[i].type);
+        const noteXFlg = (x0 <= mx && mx <= x1);
+        if (noteTimeFlg && noteXFlg) {
+            state.noteResults[i] = 0;
+            break;
+        }
+    }
 }
 
 
