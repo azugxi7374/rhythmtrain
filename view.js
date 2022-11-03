@@ -13,14 +13,18 @@ function renderPlayButton(btn, start, pause, pauseFlg) {
     } else {
         btn.dataset.pause = pauseFlg
         if (pauseFlg) {
-            btn.innerHTML = `<img src="lib/play-solid.svg">`
-            btn.firstElementChild.addEventListener('mousedown', () => {
-                start();
+            btn.innerHTML = `<img src="lib/play-solid.svg">`;
+            ['mousedown', 'touchstart'].forEach(en => {
+                btn.firstElementChild.addEventListener(en, () => {
+                    start();
+                })
             });
         } else {
-            btn.innerHTML = `<img src="lib/pause-solid.svg">`
-            btn.firstElementChild.addEventListener('mousedown', () => {
-                pause();
+            btn.innerHTML = `<img src="lib/pause-solid.svg">`;
+            ['mousedown', 'touchstart'].forEach(en => {
+                btn.firstElementChild.addEventListener(en, () => {
+                    pause();
+                })
             });
         }
     }
@@ -31,11 +35,11 @@ function calcNoteX(nLane, i) {
     const pad = 50;
     // |-pad-|--------|-pad-|
     const wlane = W - pad * 2;
-    return [wlane * i / nLane, i / nLane];
+    return [pad + wlane * i / nLane, wlane / nLane - 10];
 }
 
 function renderNotes(ctx, lineY, state) {
-    const scrollSpeed = 299 / 1000; // px/ms
+    const scrollSpeed = 300 / 1000; // px/ms
 
     // TODO width, height
     ctx.clearRect(-1, 0, 3000, 3000);
@@ -47,18 +51,18 @@ function renderNotes(ctx, lineY, state) {
 
     state.chart.forEach(({ t, type }, i) => {
         if (state.noteResults[i] === undefined) {
-            // type=0とする
+
             const elapsed = state.time - t;
             const noteY = lineY + elapsed * scrollSpeed;
-            const noteX = calcNoteX(4, type);
-            ctx.fillRect(noteX, noteY - 1, 50, 4);
+            const [noteX, w] = calcNoteX(4, type);
+            ctx.fillRect(noteX, noteY - 1, w, 4);
         }
     })
 
 }
 
-
 function playHandleTap(state, mx, my) {
+    console.log({ mx, my });
     const nLane = 4;
     // chartを前から順番に、まだ処理していない && 不可判定枠内
     const { chart, time } = state;
@@ -66,7 +70,7 @@ function playHandleTap(state, mx, my) {
         const diff = Math.abs(time - chart[i].t);
         const noteTimeFlg = (state.noteResults[i] === undefined && diff < JUDGE_FUKA);
         const [x0, x1] = calcNoteX(nLane, chart[i].type);
-        const noteXFlg = (x0 <= mx && mx <= x1);
+        const noteXFlg = (x0 <= mx && mx <= x0 + x1);
         if (noteTimeFlg && noteXFlg) {
             state.noteResults[i] = 0;
             break;
@@ -76,7 +80,7 @@ function playHandleTap(state, mx, my) {
 
 
 
-
+/*
 function animationTouch(x, y) {
     for (let i = 0; i < 3; i++) {
         const elem = document.createElement('div');
@@ -130,5 +134,5 @@ function animationTouch(x, y) {
     });
     setTimeout(() => div.remove(), dur + 10);
 }
-
+*/
 

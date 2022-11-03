@@ -1,13 +1,27 @@
 document.addEventListener('DOMContentLoaded', () => {
+    refreshIfNeed();
     main();
 });
+
+function refreshIfNeed() {
+    const maxAge = 30 * 1000;
+    const href = window.location.href
+    const url = new URL(href);
+    const _ = url.searchParams.get('_');
+    const now = Date.now();
+
+    if (_ === null || !(/^\d+/.test(_)) || _ + maxAge < now) {
+        url.searchParams.set('_', now)
+        window.location.href = url.href;
+    }
+}
+
 
 const JUDGE_RYO = 25.025
 const JUDGE_KA = 75.075
 const JUDGE_FUKA = 108.442
 
 function main() {
-
     const elem = document;
     elem.addEventListener('mousedown', (e) => {
         e.preventDefault();
@@ -15,14 +29,14 @@ function main() {
     }, { passive: false });
     document.addEventListener('touchstart', (ev) => {
         ev.preventDefault();
-        const touch = ev.touches[0];
-        handle(touch.clientX, touch.clientY);
+        for (const touch of ev.touches) {
+            handle(touch.clientX, touch.clientY);
+        }
     }, { passive: false });
     function handle(mx, my) {
         if (!state.pause) {
             playHandleTap(state, mx, my);
         }
-        animationTouch(mx, my);
     }
 
     // render
