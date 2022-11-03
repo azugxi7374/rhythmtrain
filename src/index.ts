@@ -1,8 +1,12 @@
+import { initCanvas, playHandleTap, renderNotes, renderPlayButton } from "./view"
+import { createTestChart } from "./chart";
+
 document.addEventListener('DOMContentLoaded', () => {
     refreshIfNeed();
     main();
 });
 
+// いらないかも
 function refreshIfNeed() {
     const maxAge = 30 * 1000;
     const href = window.location.href
@@ -10,16 +14,13 @@ function refreshIfNeed() {
     const _ = url.searchParams.get('_');
     const now = Date.now();
 
-    if (_ === null || !(/^\d+/.test(_)) || _ + maxAge < now) {
-        url.searchParams.set('_', now)
+    if (_ === null || !(/^\d+/.test(_)) || Number(_) + maxAge < now) {
+        url.searchParams.set('_', now.toString())
         window.location.href = url.href;
     }
 }
 
 
-const JUDGE_RYO = 25.025
-const JUDGE_KA = 75.075
-const JUDGE_FUKA = 108.442
 
 function main() {
     const elem = document;
@@ -29,6 +30,7 @@ function main() {
     }, { passive: false });
     document.addEventListener('touchstart', (ev) => {
         ev.preventDefault();
+        // @ts-ignore
         for (const touch of ev.touches) {
             handle(touch.clientX, touch.clientY);
         }
@@ -53,8 +55,11 @@ function main() {
         noteResults: {}, // {idx, judge, diff}
     };
     const notesCanvas = document.getElementById('canvas2');
+    // @ts-ignore
     notesCanvas.height = height;
+    // @ts-ignore
     notesCanvas.width = width;
+    // @ts-ignore
     const nctx = notesCanvas.getContext('2d');
     const playBtn = document.querySelector('.playbtn');
 
@@ -70,13 +75,16 @@ function main() {
         renderPlayButton(playBtn, () => start(state), () => pause(state), state.pause);
     }, 1000 / FPS)
 
+    // @ts-ignore
     window.state = state;
 }
 
+// @ts-ignore
 function pause(state) {
     state.pause = true
 }
 
+// @ts-ignore
 function start(state) {
     state.pause = false;
     state.offsetTime = Date.now() - state.time;

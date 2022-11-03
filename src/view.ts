@@ -1,5 +1,8 @@
+const JUDGE_RYO = 25.025
+const JUDGE_KA = 75.075
+const JUDGE_FUKA = 108.442
 
-function initCanvas(canvas, width, height, lineY) {
+export function initCanvas(canvas, width, height, lineY) {
     const ctx = canvas.getContext('2d');
     canvas.width = width;
     canvas.height = height;
@@ -7,7 +10,7 @@ function initCanvas(canvas, width, height, lineY) {
     ctx.fillRect(0, lineY - 2, width, 4);
 }
 
-function renderPlayButton(btn, start, pause, pauseFlg) {
+export function renderPlayButton(btn, start, pause, pauseFlg) {
     if (btn.dataset.pause === pauseFlg.toString()) {
         // NOP
     } else {
@@ -38,7 +41,7 @@ function calcNoteX(nLane, i) {
     return [pad + wlane * i / nLane, wlane / nLane - 10];
 }
 
-function renderNotes(ctx, lineY, state) {
+export function renderNotes(ctx, lineY, state) {
     const scrollSpeed = 300 / 1000; // px/ms
 
     // TODO width, height
@@ -61,7 +64,7 @@ function renderNotes(ctx, lineY, state) {
 
 }
 
-function playHandleTap(state, mx, my) {
+export function playHandleTap(state, mx, my) {
     console.log({ mx, my });
     const nLane = 4;
     // chartを前から順番に、まだ処理していない && 不可判定枠内
@@ -77,8 +80,6 @@ function playHandleTap(state, mx, my) {
         }
     }
 }
-
-
 
 /*
 function animationTouch(x, y) {

@@ -7,7 +7,7 @@ const test2 = `
 
 // const chart2 = parseTextChart(test2);
 
-function parseTextChart(text) {
+function parseTextChart(text: string) {
     let bpm = 120;
     const lines = text.split("\n");
     const barList = [];
@@ -27,7 +27,7 @@ function parseTextChart(text) {
     return convertChart(bpm, barList);
 }
 
-function convertChart(bpm, barList) {
+function convertChart(bpm: number, barList: string[]) {
     const chart = [];
     for (let i = 0; i < barList.length; i++) {
         for (let k = 0; k < barList[i].length; k++) {
@@ -42,12 +42,13 @@ function convertChart(bpm, barList) {
             }
         }
     }
+    // @ts-ignore
     window.___chart = chart;
     return chart;
 }
 
 
-function createTestChart() {
+export function createTestChart() {
     return parseTextChart(test2);
     /*
     // t=1000から順に、4/4で1拍ずつ、16小節
