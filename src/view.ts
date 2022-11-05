@@ -1,15 +1,3 @@
-const JUDGE_RYO = 25.025
-const JUDGE_KA = 75.075
-const JUDGE_FUKA = 108.442
-
-export function initCanvas(canvas, width, height, lineY) {
-    const ctx = canvas.getContext('2d');
-    canvas.width = width;
-    canvas.height = height;
-
-    ctx.fillRect(0, lineY - 2, width, 4);
-}
-
 export function renderPlayButton(btn, start, pause, pauseFlg) {
     if (btn.dataset.pause === pauseFlg.toString()) {
         // NOP
@@ -29,54 +17,6 @@ export function renderPlayButton(btn, start, pause, pauseFlg) {
                     pause();
                 })
             });
-        }
-    }
-}
-
-function calcNoteX(nLane, i) {
-    const W = 600;
-    const pad = 50;
-    // |-pad-|--------|-pad-|
-    const wlane = W - pad * 2;
-    return [pad + wlane * i / nLane, wlane / nLane - 10];
-}
-
-export function renderNotes(ctx, lineY, state) {
-    const scrollSpeed = 300 / 1000; // px/ms
-
-    // TODO width, height
-    ctx.clearRect(-1, 0, 3000, 3000);
-
-    // 1999px まで見る
-    // 一旦全部見るのでコメントアウト
-    // const tAheadLen = 1999 / scrollSpeed;
-    // const tBehindLen = 999 / scrollSpeed;
-
-    state.chart.forEach(({ t, type }, i) => {
-        if (state.noteResults[i] === undefined) {
-
-            const elapsed = state.time - t;
-            const noteY = lineY + elapsed * scrollSpeed;
-            const [noteX, w] = calcNoteX(4, type);
-            ctx.fillRect(noteX, noteY - 1, w, 4);
-        }
-    })
-
-}
-
-export function playHandleTap(state, mx, my) {
-    console.log({ mx, my });
-    const nLane = 4;
-    // chartを前から順番に、まだ処理していない && 不可判定枠内
-    const { chart, time } = state;
-    for (let i = 0; i < chart.length; i++) {
-        const diff = Math.abs(time - chart[i].t);
-        const noteTimeFlg = (state.noteResults[i] === undefined && diff < JUDGE_FUKA);
-        const [x0, x1] = calcNoteX(nLane, chart[i].type);
-        const noteXFlg = (x0 <= mx && mx <= x0 + x1);
-        if (noteTimeFlg && noteXFlg) {
-            state.noteResults[i] = 0;
-            break;
         }
     }
 }

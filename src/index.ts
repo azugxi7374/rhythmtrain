@@ -1,5 +1,6 @@
-import { initCanvas, playHandleTap, renderNotes, renderPlayButton } from "./view"
+import { renderPlayButton } from "./view"
 import { createTestChart } from "./chart";
+import Standard4Lane from "./game_standard4Lane"
 
 document.addEventListener('DOMContentLoaded', () => {
     refreshIfNeed();
@@ -21,31 +22,9 @@ function refreshIfNeed() {
 }
 
 
-
 function main() {
-    const elem = document;
-    elem.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        handle(e.clientX, e.clientY);
-    }, { passive: false });
-    document.addEventListener('touchstart', (ev) => {
-        ev.preventDefault();
-        // @ts-ignore
-        for (const touch of ev.touches) {
-            handle(touch.clientX, touch.clientY);
-        }
-    }, { passive: false });
-    function handle(mx, my) {
-        if (!state.pause) {
-            playHandleTap(state, mx, my);
-        }
-    }
+    const game = createView(Standard4Lane)
 
-    // render
-    const width = window.innerWidth - 10;
-    const height = window.innerHeight - 10;
-    const lineY = height * 4 / 5;
-    initCanvas(document.getElementById('canvas1'), width, height, lineY);
     const state = {
         // bpm: 180,
         pause: true,
@@ -54,13 +33,7 @@ function main() {
         chart: createTestChart(),
         noteResults: {}, // {idx, judge, diff}
     };
-    const notesCanvas = document.getElementById('canvas2');
-    // @ts-ignore
-    notesCanvas.height = height;
-    // @ts-ignore
-    notesCanvas.width = width;
-    // @ts-ignore
-    const nctx = notesCanvas.getContext('2d');
+
     const playBtn = document.querySelector('.playbtn');
 
     const FPS = 60;
@@ -70,13 +43,27 @@ function main() {
             const t1 = Date.now();
             const time = t1 - state.offsetTime;
             state.time = time;
-            renderNotes(nctx, lineY, state);
         }
+        game.pause(state.pause);
+        game.handleFrame(state.chart, state.time, state.noteResults);
+
         renderPlayButton(playBtn, () => start(state), () => pause(state), state.pause);
     }, 1000 / FPS)
 
     // @ts-ignore
     window.state = state;
+}
+
+// TODO 名前
+function createView(Game) {
+    const H = window.innerHeight - 10;
+    const W = window.innerWidth - 10;
+
+    const c1 = document.querySelector('#canvas1');
+    const c2 = document.querySelector('#canvas2');
+    const game = Game(W, H, c1, c2);
+
+    return game;
 }
 
 // @ts-ignore
