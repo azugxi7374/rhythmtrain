@@ -1,0 +1,22 @@
+.effect_touch {
+    z-index: 100;
+    position: absolute;
+}
+
+
+#group-canvas {
+    position: relative;
+}
+
+#group-canvas>canvas {
+    position: absolute;
+}
+
+.playbtn {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    color: #000;
+    z-index: 100;
+    right: 20px;
+}
